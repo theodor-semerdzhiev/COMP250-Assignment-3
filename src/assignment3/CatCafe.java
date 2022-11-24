@@ -130,7 +130,7 @@ public class CatCafe implements Iterable<Cat> {
 			//TODO
 			
 			
-			return null;
+			return root;
 		}
 
 		private CatNode add(CatNode root, Cat c) {
@@ -158,7 +158,7 @@ public class CatCafe implements Iterable<Cat> {
 			if (senior == null) {
 				return catEmployee;
 			} else {
-				return junior.findMostSenior();
+				return senior.findMostSenior();
 			}
 		}
 
@@ -253,11 +253,19 @@ public class CatCafe implements Iterable<Cat> {
 		
 		CatCafe Cafe = new CatCafe();
 		
-		/* Small test case
-		Cafe.hire(B);Cafe.hire(C);Cafe.hire(J);Cafe.hire(JJ);Cafe.hire(JTO);Cafe.hire(MrB);Cafe.hire(MrsN);Cafe.hire(T);Cafe.hire(BC);Cafe.hire(L);
+		 
+		Cafe.hire(B);
+		Cafe.hire(C);
+		Cafe.hire(J);Cafe.hire(JJ);
+		Cafe.hire(JTO);
+		Cafe.hire(MrB);
+		Cafe.hire(MrsN);
+		Cafe.hire(T);
+		Cafe.hire(BC);
+		Cafe.hire(L);
 	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
 	    System.out.println("The most senior cat is: "+Cafe.findMostSenior().toString()+" hired at month: "+Cafe.findMostSenior().getMonthHired());
-		*/
+		
 	}
 }
 
