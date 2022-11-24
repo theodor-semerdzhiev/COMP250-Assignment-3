@@ -123,16 +123,28 @@ public class CatCafe implements Iterable<Cat> {
 		// add the c to the tree rooted at this and returns the root of the resulting tree
 		public CatNode hire (Cat c) {
 			//step 1: had CatNode to proper position in the tree
-			
+			add(root, c);
 			
 			
 			//step 2: perform tree rotation
-			
+			//TODO
 			
 			
 			return null;
 		}
 
+		private CatNode add(CatNode root, Cat c) {
+			
+			if (root == null) {
+				root = new CatNode(c);
+			} else if(root.catEmployee.getMonthHired() > c.getMonthHired()) {
+				root.junior = add(root.junior, c);
+				
+			} else if (root.catEmployee.getMonthHired() < c.getMonthHired()) {
+				root.senior = add(root.senior, c);
+			}
+			return root;
+		}
 		// remove c from the tree rooted at this and returns the root of the resulting tree
 		public CatNode retire(Cat c) {
 			/*
