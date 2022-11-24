@@ -133,6 +133,7 @@ public class CatCafe implements Iterable<Cat> {
 			}
 		}
 
+		//
 		// find the cat with lowest seniority in the tree rooted at this
 		public Cat findMostJunior() {
 			if(junior == null) {
