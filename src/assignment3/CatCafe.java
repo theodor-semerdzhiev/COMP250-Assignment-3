@@ -66,12 +66,29 @@ public class CatCafe implements Iterable<Cat> {
 
 	// Returns the expected grooming cost the cafe has to incur in the next numDays days
 	public double budgetGroomingExpenses(int numDays) {
-		/*
-		 * TODO: ADD YOUR CODE HERE
-		 */
-		return 0;
+		double cost=0;
+		if(root.catEmployee.getDaysToNextGrooming() <= numDays) {
+		cost += root.catEmployee.getExpectedGroomingCost();
+		}
+		cost += CalcGroomingExpenses(root.senior, numDays);		
+	
+		cost += CalcGroomingExpenses(root.junior, numDays);	
+	
+		return cost;
 	}
 
+	// DEBUG OUT OF THIS PLEASE
+	private double CalcGroomingExpenses(CatNode root, int numdays) {
+		double cost=0;
+		if(root != null) {
+			if(root.catEmployee.getDaysToNextGrooming() <= numdays ) {
+			cost += root.catEmployee.getExpectedGroomingCost();
+			}
+			cost = CalcGroomingExpenses(root.senior, numdays) + CalcGroomingExpenses(root.junior, numdays);
+			return cost;
+		}
+		return 0;
+	}
 	// returns a list of list of Cats. 
 	// The cats in the list at index 0 need be groomed in the next week. 
 	// The cats in the list at index i need to be groomed in i weeks. 
