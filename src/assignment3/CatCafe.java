@@ -90,6 +90,7 @@ public class CatCafe implements Iterable<Cat> {
 
 
 	public class CatNode {
+		
 		public Cat catEmployee;
 		public CatNode junior;
 		public CatNode senior;
@@ -125,18 +126,20 @@ public class CatCafe implements Iterable<Cat> {
 
 		// find the cat with highest seniority in the tree rooted at this
 		public Cat findMostSenior() {
-			/*
-			 * TODO: ADD YOUR CODE HERE
-			 */
-			return null;
+			if (senior == null) {
+				return catEmployee;
+			} else {
+				return junior.findMostSenior();
+			}
 		}
 
 		// find the cat with lowest seniority in the tree rooted at this
 		public Cat findMostJunior() {
-			/*
-			 * TODO: ADD YOUR CODE HERE
-			 */
-			return null;
+			if(junior == null) {
+				return catEmployee;
+			} else {
+				return junior.findMostJunior();
+			}
 		}
 
 		// Feel free to modify the toString() method if you'd like to see something else displayed.
@@ -218,11 +221,16 @@ public class CatCafe implements Iterable<Cat> {
 		Cat BC = new Cat("Blofeld's cat", 6, 72, 18, 120.0);
 		Cat L = new Cat("Lucifer", 10, 44, 20, 50.0);
 		
-
+		CatCafe Cafe = new CatCafe();
+		
+		/* Small test case
+		Cafe.hire(B);Cafe.hire(C);Cafe.hire(J);Cafe.hire(JJ);Cafe.hire(JTO);Cafe.hire(MrB);Cafe.hire(MrsN);Cafe.hire(T);Cafe.hire(BC);Cafe.hire(L);
+	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
+	    System.out.println("The most senior cat is: "+Cafe.findMostSenior().toString()+" hired at month: "+Cafe.findMostSenior().getMonthHired());
+		*/
 	}
-
-
 }
+
 
 
 
