@@ -77,7 +77,7 @@ public class CatCafe implements Iterable<Cat> {
 		return cost;
 	}
 
-	// DEBUG OUT OF THIS PLEASE
+	// DEBUG THE FUCK OUT OF THIS PLEASE
 	private double CalcGroomingExpenses(CatNode root, int numdays) {
 		double cost=0;
 		if(root != null) {
@@ -127,6 +127,10 @@ public class CatCafe implements Iterable<Cat> {
 			
 			
 			//step 2: perform tree rotation
+			
+			//1 
+			
+			
 			//TODO
 			
 			
@@ -217,21 +221,50 @@ public class CatCafe implements Iterable<Cat> {
 
 	}
 	
-	private void printTree(CatNode root, int spaceCount)
+	private static void printTree(CatNode root, int spaceCount)
     {
         if(root==null)
             return;
 
-        int spacing = spaceCount+20;
+        int spacing = spaceCount+24;
 
         printTree(root.senior, spacing);
 
 
         System.out.println();
-        for(int index=0; index < spacing; index++)
-            System.out.print(" ");
+        for(int index=0; index < spacing+15; index++) {
+        	System.out.print(" ");
+        }
+        if (root.senior != null) {
+        	System.out.print("/");
+        	System.out.println();
+        	for(int index=0; index < spacing+14; index++) {
+        		System.out.print(" ");
+        	}
+        	if (root.senior != null) {
+        		System.out.print("/");
+        	}
+        }
+
+        System.out.println();
+        for(int index=0; index < spacing; index++) {
+        	System.out.print(" ");
+        }
         System.out.println(root.catEmployee);
 
+        for(int index=0; index < spacing+15; index++) {
+        	System.out.print(" ");
+        }
+        if (root.junior != null) {
+        	System.out.print("\\");
+        	System.out.println();
+        	for(int index=0; index < spacing+16; index++) {
+        		System.out.print(" ");
+        	}
+        	if (root.junior != null) {
+        		System.out.print("\\");
+        	}
+        }
         printTree(root.junior, spacing);
     }
 
@@ -263,6 +296,9 @@ public class CatCafe implements Iterable<Cat> {
 		Cafe.hire(T);
 		Cafe.hire(BC);
 		Cafe.hire(L);
+		
+		printTree(Cafe.root, 0);
+		System.out.println();
 	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
 	    System.out.println("The most senior cat is: "+Cafe.findMostSenior().toString()+" hired at month: "+Cafe.findMostSenior().getMonthHired());
 		
