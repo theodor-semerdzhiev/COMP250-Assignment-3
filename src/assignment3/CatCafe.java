@@ -19,6 +19,7 @@ public class CatCafe implements Iterable<Cat> {
 	// New CatNode objects, but same Cat objects
 	public CatCafe(CatCafe cafe) {
 
+<<<<<<< HEAD
 		//root = new CatNode(cafe.root.catEmployee);
 		root =shallowcopy(cafe.root);
 		
@@ -50,6 +51,11 @@ public class CatCafe implements Iterable<Cat> {
 		return node;
 	}
 
+=======
+	}
+
+
+>>>>>>> 498d034b74898fc98d2d2625b3a0e5df2ecb8aea
 	
 	// add a cat to the cafe database
 	public void hire(Cat c) {
@@ -85,6 +91,14 @@ public class CatCafe implements Iterable<Cat> {
 	// in the cafe with the thickest fur. Cats are sorted in descending 
 	// order based on their fur thickness. 
 	public ArrayList<Cat> buildHallOfFame(int numOfCatsToHonor) {
+<<<<<<< HEAD
+=======
+
+		//for this method use breath order traversal
+		//since the fur thickness is highest at the top and lower towards the leafs (its a heap)
+		return null;
+	}
+>>>>>>> 498d034b74898fc98d2d2625b3a0e5df2ecb8aea
 
 		if(numOfCatsToHonor == 0) {
 			return new ArrayList<Cat>();
@@ -555,6 +569,7 @@ public class CatCafe implements Iterable<Cat> {
 		printTree(Cafe.root, 0);
 		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
 		
+<<<<<<< HEAD
 		
 		Cafe.buildHallOfFame(5);
 		
@@ -563,6 +578,8 @@ public class CatCafe implements Iterable<Cat> {
 		CatCafe caf = new CatCafe(Cafe);
 		printTree(caf.root, 0);
 		
+=======
+>>>>>>> 498d034b74898fc98d2d2625b3a0e5df2ecb8aea
 		System.out.println();
 	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
 	    System.out.println("The most senior cat is: "+Cafe.findMostSenior().toString()+" hired at month: "+Cafe.findMostSenior().getMonthHired());
