@@ -19,8 +19,36 @@ public class CatCafe implements Iterable<Cat> {
 	// New CatNode objects, but same Cat objects
 	public CatCafe(CatCafe cafe) {
 
+		//root = new CatNode(cafe.root.catEmployee);
+		root =shallowcopy(cafe.root);
+		
+		
 	}
 
+
+	private CatNode shallowcopy(CatNode root) {
+		
+		if(root == null) {
+			return null;
+		}
+		
+		CatNode node = new CatNode(root.catEmployee);  
+		node.parent = root.parent;
+		
+		node.senior = shallowcopy(root.senior);
+		
+		if(node.senior != null) {
+		node.senior.parent=node;
+		}
+		node.junior = shallowcopy(root.junior);
+		if(node.junior != null) {
+		node.junior.parent=node;
+		}
+
+		
+		
+		return node;
+	}
 
 	
 	// add a cat to the cafe database
@@ -58,11 +86,55 @@ public class CatCafe implements Iterable<Cat> {
 	// order based on their fur thickness. 
 	public ArrayList<Cat> buildHallOfFame(int numOfCatsToHonor) {
 
-		//for this method use breath order traversal
-		//since the fur thickness is highest at the top and lower towards the leafs (its a heap)
-		return null;
+		if(numOfCatsToHonor == 0) {
+			return new ArrayList<Cat>();
+		}
+		
+		ArrayList<Cat> honorlist_long = new ArrayList<Cat>();
+		
+		insert(root, honorlist_long);
+	
+		System.out.println("long version:"+honorlist_long.toString());
+		ArrayList<Cat> finalhonorlist = new ArrayList<Cat>();
+		for(int i=0; i < numOfCatsToHonor; i++) {
+			
+			finalhonorlist.add(honorlist_long.get(i));
+		}
+		System.out.println("Cutdown version:"+finalhonorlist.toString());
+		
+		return finalhonorlist;
 	}
+	
+	
+	private void insert(CatNode root, ArrayList<Cat> honorlist) {
 
+		if(root == null) {
+			return;
+		}
+		int i=0;
+		do {
+
+			if(honorlist.size() == 0) {
+				honorlist.add(root.catEmployee);
+				break;
+			} else if(honorlist.get(i).getFurThickness() < root.catEmployee.getFurThickness()) {
+				honorlist.add(i, root.catEmployee);
+				break;
+			} else if (i == honorlist.size()-1) {
+				honorlist.add(root.catEmployee);
+				break;
+			}
+			i++;
+		} while(i<honorlist.size());
+
+		insert(root.senior, honorlist);
+
+		insert(root.junior, honorlist);
+	}
+	
+	
+	
+	
 	// Returns the expected grooming cost the cafe has to incur in the next numDays days
 	public double budgetGroomingExpenses(int numDays) {
 		
@@ -482,6 +554,14 @@ public class CatCafe implements Iterable<Cat> {
 		Cafe.hire(L);
 		printTree(Cafe.root, 0);
 		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		
+		
+		Cafe.buildHallOfFame(5);
+		
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		
+		CatCafe caf = new CatCafe(Cafe);
+		printTree(caf.root, 0);
 		
 		System.out.println();
 	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
