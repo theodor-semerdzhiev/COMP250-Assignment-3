@@ -561,7 +561,7 @@ public class CatCafe implements Iterable<Cat> {
 		printTree(Cafe.root, 0);
 		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
 		
-<<<<<<< HEAD
+
 		
 		Cafe.buildHallOfFame(5);
 		
@@ -570,8 +570,7 @@ public class CatCafe implements Iterable<Cat> {
 		CatCafe caf = new CatCafe(Cafe);
 		printTree(caf.root, 0);
 		
-=======
->>>>>>> 498d034b74898fc98d2d2625b3a0e5df2ecb8aea
+
 		System.out.println();
 	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
 	    System.out.println("The most senior cat is: "+Cafe.findMostSenior().toString()+" hired at month: "+Cafe.findMostSenior().getMonthHired());
