@@ -18,12 +18,11 @@ public class CatCafe implements Iterable<Cat> {
 	// Constructor that makes a shallow copy of a CatCafe
 	// New CatNode objects, but same Cat objects
 	public CatCafe(CatCafe cafe) {
-		/*
-		 * TODO: ADD YOUR CODE HERE
-		 */
+
 	}
 
 
+	
 	// add a cat to the cafe database
 	public void hire(Cat c) {
 		if (root == null) 
@@ -58,37 +57,38 @@ public class CatCafe implements Iterable<Cat> {
 	// in the cafe with the thickest fur. Cats are sorted in descending 
 	// order based on their fur thickness. 
 	public ArrayList<Cat> buildHallOfFame(int numOfCatsToHonor) {
-		/*
-		 * TODO: ADD YOUR CODE HERE
-		 */
+
+		//for this method use breath order traversal
+		//since the fur thickness is highest at the top and lower towards the leafs (its a heap)
 		return null;
 	}
 
 	// Returns the expected grooming cost the cafe has to incur in the next numDays days
 	public double budgetGroomingExpenses(int numDays) {
+		
 		double cost=0;
 		if(root.catEmployee.getDaysToNextGrooming() <= numDays) {
 		cost += root.catEmployee.getExpectedGroomingCost();
 		}
 		cost += CalcGroomingExpenses(root.senior, numDays);		
-	
 		cost += CalcGroomingExpenses(root.junior, numDays);	
 	
 		return cost;
 	}
 
-	// DEBUG THE FUCK OUT OF THIS PLEASE
+	// WORKS
 	private double CalcGroomingExpenses(CatNode root, int numdays) {
 		double cost=0;
-		if(root != null) {
-			if(root.catEmployee.getDaysToNextGrooming() <= numdays ) {
-			cost += root.catEmployee.getExpectedGroomingCost();
-			}
-			cost = CalcGroomingExpenses(root.senior, numdays) + CalcGroomingExpenses(root.junior, numdays);
-			return cost;
+		if(root == null) {
+			return 0;
 		}
-		return 0;
+		if ( root.catEmployee.getDaysToNextGrooming() <= numdays ) {
+			cost += root.catEmployee.getExpectedGroomingCost();
+		}	
+		return cost + CalcGroomingExpenses(root.senior, numdays) + CalcGroomingExpenses(root.junior, numdays);
 	}
+	
+	
 	// returns a list of list of Cats. 
 	// The cats in the list at index 0 need be groomed in the next week. 
 	// The cats in the list at index i need to be groomed in i weeks. 
@@ -107,7 +107,7 @@ public class CatCafe implements Iterable<Cat> {
 
 
 	public class CatNode {
-		
+
 		public Cat catEmployee;
 		public CatNode junior;
 		public CatNode senior;
@@ -122,41 +122,206 @@ public class CatCafe implements Iterable<Cat> {
 
 		// add the c to the tree rooted at this and returns the root of the resulting tree
 		public CatNode hire (Cat c) {
-			//step 1: had CatNode to proper position in the tree
-			add(root, c);
-			
-			
-			//step 2: perform tree rotation
-			
-			//1 
-			
-			
-			//TODO
-			
-			
+
+			CatNode newNode = findCatNode(add(root, c), c);
+
+			//do tree rotation
+			while(newNode.parent != null && newNode.parent.catEmployee.getFurThickness() < newNode.catEmployee.getFurThickness()) {
+				if(newNode == newNode.parent.junior) {
+					newNode=rightRotate(newNode);
+				} else if(newNode== newNode.parent.senior) {
+					newNode=leftRotate(newNode);;
+				}
+			}
 			return root;
 		}
 
+
+		//WORKS
+		private CatNode rightRotate(CatNode newnode) {
+
+			if (newnode == null) {
+				return null;
+			}
+			CatNode root=newnode.parent;
+
+			//egde case for when the parent of the newnode is the root
+			if(newnode.parent == CatCafe.this.root) {
+				CatCafe.this.root.parent=newnode;
+
+				CatNode tmp = newnode.senior; 
+
+				newnode.senior=CatCafe.this.root;
+				CatCafe.this.root.junior=tmp;
+
+				CatCafe.this.root=newnode;
+				newnode.parent=null;
+				return newnode;
+			}
+
+			//fixes the parent
+			if(root.parent.junior == root) {
+				root.parent.junior=newnode;
+			} else if(root.parent.senior == root) {
+				root.parent.senior=newnode;
+			}
+			newnode.parent=root.parent;
+			////
+
+			CatNode tmp=newnode.senior;
+
+			newnode.senior=root;
+			root.parent=newnode;
+
+			root.junior=tmp;
+			if(tmp != null) {
+				tmp.parent=root;
+			}
+
+
+			return newnode;
+
+		}
+
+		//WORKS
+		private CatNode leftRotate(CatNode newnode) {
+
+			if(newnode ==null) {
+				return null;
+			}
+			CatNode root=newnode.parent;
+
+			//egde case if newnode is root
+			if(newnode.parent == CatCafe.this.root) {
+				CatCafe.this.root.parent=newnode;
+
+				CatNode tmp = newnode.junior; 
+
+				newnode.junior=CatCafe.this.root;
+				CatCafe.this.root.senior=tmp;
+
+				CatCafe.this.root=newnode;
+				newnode.parent=null;
+				return newnode;
+			}
+
+			if(root.parent.junior == root) {
+				root.parent.junior=newnode;
+			} else if(root.parent.senior == root) {
+				root.parent.senior=newnode;
+			}
+			newnode.parent=root.parent;
+
+			CatNode tmp=newnode.junior;
+
+			newnode.junior=root;
+			root.parent=newnode;
+
+			root.senior=tmp;
+
+			if(tmp != null) {
+				tmp.parent=root;
+			}
+
+			return newnode;
+		}
+
+		//used to locate a specific cat in tree
+		private CatNode findCatNode(CatNode root, Cat c) {
+			if (root ==null) {
+				return null;
+			}
+
+			if (root.catEmployee.getMonthHired() == c.getMonthHired()) {
+				return root;
+			}
+
+			CatNode tmp = findCatNode(root.junior,c);
+			if(tmp != null) {
+				return tmp;
+			}
+
+			return findCatNode(root.senior,c);
+
+		}
+
+		//this method returns the cat that was added
 		private CatNode add(CatNode root, Cat c) {
-			
+
 			if (root == null) {
 				root = new CatNode(c);
-			} else if(root.catEmployee.getMonthHired() > c.getMonthHired()) {
+			} else if(root.catEmployee.getMonthHired() < c.getMonthHired()) {
 				root.junior = add(root.junior, c);
-				
-			} else if (root.catEmployee.getMonthHired() < c.getMonthHired()) {
+				root.junior.parent=root;
+
+			} else if (root.catEmployee.getMonthHired() > c.getMonthHired()) {
 				root.senior = add(root.senior, c);
+				root.senior.parent=root;
+
 			}
 			return root;
 		}
 		// remove c from the tree rooted at this and returns the root of the resulting tree
 		public CatNode retire(Cat c) {
-			/*
-			 * TODO: ADD YOUR CODE HERE
-			 */
-			return null;
-		}
+			
+			
+			if(root.catEmployee.equals(c) && root.senior ==null && root.junior == null) {
+				return null;
+			}
+			
+			CatNode node=remove(root, c);
+			
 
+			while(node != null && node.junior.catEmployee.getFurThickness() < node.catEmployee.getFurThickness()) {
+				if(node == node.parent.junior) {
+					node=rightRotate(node.junior);
+				} else if(node == node.parent.senior) {
+					node=leftRotate(node.junior);
+				}
+			}
+			return root;
+		}
+		
+		
+		public CatNode remove(CatNode root, Cat c) {
+			
+			
+			if(root ==CatCafe.this.root) { //check if we are trying to remove the head
+				return null; 
+				
+			} else if(root.catEmployee.equals(c)) {
+				
+			CatNode mostsenior;	
+			
+			if(root.junior == null) {
+				mostsenior=root;
+			} else if(root.junior.senior == null) {
+				mostsenior=root.junior;
+			} else {
+				mostsenior = findCatNode(root, root.junior.findMostSenior());
+			}
+			mostsenior.parent.senior=null;
+			
+			mostsenior.parent=root.parent;
+			if(root.parent.senior == root) {
+				root.parent.senior=mostsenior;
+			} else if(root.parent.junior == root) {
+				root.parent.junior=mostsenior;
+			}
+			mostsenior.junior=root.junior;
+			mostsenior.junior.parent=mostsenior;
+			
+			mostsenior.senior=root.senior;
+			mostsenior.senior.parent=mostsenior;
+			return mostsenior;
+			} else if(root.catEmployee.getMonthHired() < c.getMonthHired()) {
+				return remove(root.senior, c);
+				
+			} else if(root.catEmployee.getMonthHired() > c.getMonthHired()) {
+				return remove(root.junior, c);
+			}
+			return root;
+		}
 		// find the cat with highest seniority in the tree rooted at this
 		public Cat findMostSenior() {
 			if (senior == null) {
@@ -191,6 +356,7 @@ public class CatCafe implements Iterable<Cat> {
 				result += "parent of " + this.catEmployee.toString() + " :\n";
 				result += this.parent.catEmployee.toString() +"\n";
 			}
+			
 			return result;
 		}
 	}
@@ -223,47 +389,46 @@ public class CatCafe implements Iterable<Cat> {
 	
 	private static void printTree(CatNode root, int spaceCount)
     {
-        if(root==null)
+        if(root==null) {
             return;
-
+        }
         int spacing = spaceCount+24;
-
+        
         printTree(root.senior, spacing);
-
-
+        
         System.out.println();
-        for(int index=0; index < spacing+15; index++) {
-        	System.out.print(" ");
+        for(int index=0; index < spacing+root.catEmployee.toString().length()+1; index++) {
+            System.out.print(" ");
         }
         if (root.senior != null) {
-        	System.out.print("/");
-        	System.out.println();
-        	for(int index=0; index < spacing+14; index++) {
-        		System.out.print(" ");
-        	}
-        	if (root.senior != null) {
-        		System.out.print("/");
-        	}
+            System.out.print("/");
+            System.out.println();
+            for(int index=0; index < spacing+root.catEmployee.toString().length(); index++) {
+                System.out.print(" ");
+            }
+            if (root.senior != null) {
+                System.out.print("/");
+            }
         }
 
         System.out.println();
         for(int index=0; index < spacing; index++) {
-        	System.out.print(" ");
+            System.out.print(" ");
         }
         System.out.println(root.catEmployee);
 
-        for(int index=0; index < spacing+15; index++) {
-        	System.out.print(" ");
+        for(int index=0; index < spacing+root.catEmployee.toString().length(); index++) {
+            System.out.print(" ");
         }
         if (root.junior != null) {
-        	System.out.print("\\");
-        	System.out.println();
-        	for(int index=0; index < spacing+16; index++) {
-        		System.out.print(" ");
-        	}
-        	if (root.junior != null) {
-        		System.out.print("\\");
-        	}
+            System.out.print("\\");
+            System.out.println();
+            for(int index=0; index < spacing+root.catEmployee.toString().length()+1; index++) {
+                System.out.print(" ");
+            }
+            if (root.junior != null) {
+                System.out.print("\\");
+            }
         }
         printTree(root.junior, spacing);
     }
@@ -288,16 +453,36 @@ public class CatCafe implements Iterable<Cat> {
 		
 		 
 		Cafe.hire(B);
-		Cafe.hire(C);
-		Cafe.hire(J);Cafe.hire(JJ);
-		Cafe.hire(JTO);
-		Cafe.hire(MrB);
-		Cafe.hire(MrsN);
-		Cafe.hire(T);
-		Cafe.hire(BC);
-		Cafe.hire(L);
-		
 		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(C);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(J);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(JJ);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(JTO);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(MrB);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(MrsN);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(T);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(BC);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		Cafe.hire(L);
+		printTree(Cafe.root, 0);
+		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
+		
 		System.out.println();
 	    System.out.println("The most junior cat is: "+Cafe.findMostJunior().toString()+" hired at month: "+Cafe.findMostJunior().getMonthHired());
 	    System.out.println("The most senior cat is: "+Cafe.findMostSenior().toString()+" hired at month: "+Cafe.findMostSenior().getMonthHired());
