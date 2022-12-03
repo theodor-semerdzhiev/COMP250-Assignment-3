@@ -381,56 +381,68 @@ public class CatCafe implements Iterable<Cat> {
 
 			CatNode node=remove(this, c);  
 			
-			if(node == null) {
-				return root;
-			}
+			if(this == node || node == null) {
+				return this;
+			} 
 			
 			CatNode tmp=null;
+
+
+
+			if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
+				if(node.senior == null) {
+					tmp=node.junior;	
+				} else if(node.junior.catEmployee.getFurThickness() >  node.senior.catEmployee.getFurThickness()) {
+					tmp = node.junior;
+				} else {
+					tmp = node.senior;					
+				}
+			} else if(node.senior != null && node.senior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()){				
+				if(node.junior == null) {			
+					tmp = node.senior;				
+				} else if(node.junior.catEmployee.getFurThickness() <  node.senior.catEmployee.getFurThickness()) {
+					tmp = node.senior;				
+				} else {
+					tmp = node.junior;					
+				}
+			} else if(this == root){
+				tmp=root;
+			} else {
+				tmp=node;
+			}
+			
+			
 			while(node.senior != null || node.junior !=null) {
-
 				if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
-					
 					if(node.senior == null) {
-						tmp = rightRotate(node.junior);
-						
+						rightRotate(node.junior);	
 					} else if(node.junior.catEmployee.getFurThickness() >  node.senior.catEmployee.getFurThickness()) {
-						tmp = rightRotate(node.junior);
-						
-					//printTree(root,0);
+						rightRotate(node.junior);
 					} else {
-						tmp = leftRotate(node.senior);
-					
+						leftRotate(node.senior);					
 					}
-
-				} else if(node.senior != null && node.senior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()){
-					
-					if(node.junior == null) {
-					
-						tmp = leftRotate(node.senior);
-						
+				} else if(node.senior != null && node.senior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()){				
+					if(node.junior == null) {			
+						leftRotate(node.senior);				
 					} else if(node.junior.catEmployee.getFurThickness() <  node.senior.catEmployee.getFurThickness()) {
-						tmp = leftRotate(node.senior);
-					
+						leftRotate(node.senior);				
 					} else {
-						tmp = rightRotate(node.junior);
-						
+						rightRotate(node.junior);					
 					}
-					//printTree(root,0);
-
 				} else {
 					break;
 				}
 			}
-			return root;
+			return tmp; //TODO make it so that it returns the instance of the new head of the node 
 		}
 
-		//TODO DEGUG THE FUCK OUT OF THIS PLEASE 
+		//WORKS (FOR NOW)
 		//this method returns the node that the removed node is replaced by
 		private CatNode remove(CatNode root, Cat c) {
 			
 			
 			if(root == null) {
-				return null;
+				return this;
 		
 			}
 			
@@ -473,7 +485,7 @@ public class CatCafe implements Iterable<Cat> {
 				
 				newNode.parent=null;
 				CatCafe.this.root=newNode;
-				return newNode;
+				return CatCafe.this.root;
 				
 			} else if(root.catEmployee.equals(c)) {
 				//edge case for when the node to remove as no children
