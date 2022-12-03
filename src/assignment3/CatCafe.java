@@ -236,7 +236,7 @@ public class CatCafe implements Iterable<Cat> {
 			if(root == null) {
 				return newnode;
 			}
-			//egde case for when the parent of the newnode is the root
+			//edge case for when the parent of the newnode is the root
 			if(newnode.parent == CatCafe.this.root) {
 				//CatCafe.this.root.parent=newnode;
 
@@ -288,7 +288,7 @@ public class CatCafe implements Iterable<Cat> {
 			if(root == null) {
 				return newnode;
 			}
-			//egde case if newnode parent is root
+			//edge case if newnode parent is root
 			if(newnode.parent == CatCafe.this.root) {
 				
 
@@ -371,7 +371,7 @@ public class CatCafe implements Iterable<Cat> {
 		
 		// remove c from the tree rooted at this and returns the root of the resulting tree
 		
-		//TODO FIX THIS METHOD, NOT WORKING 
+		//TODO WORKS
 		public CatNode retire(Cat c) {
 
 			
@@ -379,34 +379,41 @@ public class CatCafe implements Iterable<Cat> {
 				return null;
 			} 
 
-			CatNode node=remove(root, c);
+			CatNode node=remove(this, c);  
 			
 			if(node == null) {
 				return root;
 			}
 			
+			CatNode tmp=null;
 			while(node.senior != null || node.junior !=null) {
 
 				if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
 					
 					if(node.senior == null) {
-						rightRotate(node.junior);
+						tmp = rightRotate(node.junior);
+						
 					} else if(node.junior.catEmployee.getFurThickness() >  node.senior.catEmployee.getFurThickness()) {
-						rightRotate(node.junior);
+						tmp = rightRotate(node.junior);
+						
 					//printTree(root,0);
 					} else {
-						leftRotate(node.senior);
+						tmp = leftRotate(node.senior);
+					
 					}
 
 				} else if(node.senior != null && node.senior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()){
 					
 					if(node.junior == null) {
 					
-						leftRotate(node.senior);
+						tmp = leftRotate(node.senior);
+						
 					} else if(node.junior.catEmployee.getFurThickness() <  node.senior.catEmployee.getFurThickness()) {
-						leftRotate(node.senior);
+						tmp = leftRotate(node.senior);
+					
 					} else {
-						rightRotate(node.junior);
+						tmp = rightRotate(node.junior);
+						
 					}
 					//printTree(root,0);
 
@@ -480,7 +487,11 @@ public class CatCafe implements Iterable<Cat> {
 					//edge case for when the node to remove as no junior child
 				} else if(root.junior == null) {
 					root.senior.parent=root.parent;
-					root.parent.senior=root.senior;
+					if(root.parent.junior == root) {
+						root.parent.junior=root.senior;
+					} else if(root.parent.senior == root) {
+						root.parent.senior=root.senior;
+					}
 					return root.senior;
 					//egde case for when the node to remove as no senior child
 				} else if(root.senior == null) {
@@ -576,9 +587,7 @@ public class CatCafe implements Iterable<Cat> {
 		}
 
 		void InorderInsertion(CatNode root, ArrayList<Cat> arr) {
-			
 			if(root != null) {
-			
 				InorderInsertion(root.junior, arr);
 				arr.add(root.catEmployee);
 				InorderInsertion(root.senior, arr);
