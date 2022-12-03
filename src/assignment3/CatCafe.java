@@ -277,7 +277,7 @@ public class CatCafe implements Iterable<Cat> {
 
 		}
 
-		//TODO FIX THIS METHOD, WHEN MUST INVERT WITH HEAD MUST FIX THAT 
+		//TODO works
 		private CatNode leftRotate(CatNode newnode) {
 
 			if(newnode ==null) {
@@ -375,7 +375,7 @@ public class CatCafe implements Iterable<Cat> {
 		public CatNode retire(Cat c) {
 
 			
-			if(root.parent == null && root.catEmployee.equals(c) && root.senior ==null && root.junior == null) {
+			if(root.catEmployee.equals(c) && root.senior ==null && root.junior == null) {
 				return null;
 			} 
 
@@ -446,6 +446,7 @@ public class CatCafe implements Iterable<Cat> {
 					}
 					newNode.parent=null;
 					CatCafe.this.root=newNode;
+					
 					return newNode;
 				}
 				
@@ -480,6 +481,15 @@ public class CatCafe implements Iterable<Cat> {
 				} else if(root.junior == null) {
 					root.senior.parent=root.parent;
 					root.parent.senior=root.senior;
+					return root.senior;
+					//egde case for when the node to remove as no senior child
+				} else if(root.senior == null) {
+					root.junior.parent=root.parent;
+					if(root.parent.junior == root) {
+						root.parent.junior=root.junior;
+					} else if(root.parent.senior == root) {
+						root.parent.senior=root.junior;
+					}
 					return root.senior;
 				}
 				
@@ -561,18 +571,17 @@ public class CatCafe implements Iterable<Cat> {
 		
 		//sets the arraylist in a depthfirst postorder traversal
 		private CatCafeIterator() {
-			depthFirstInsertion(CatCafe.this.root, CatArray);
+			InorderInsertion(CatCafe.this.root, CatArray);
 			currentindex=0;
 		}
 
-		void depthFirstInsertion(CatNode root, ArrayList<Cat> arr) {
+		void InorderInsertion(CatNode root, ArrayList<Cat> arr) {
 			
 			if(root != null) {
 			
-				depthFirstInsertion(root.junior, arr);
-				depthFirstInsertion(root.senior, arr);
-				
+				InorderInsertion(root.junior, arr);
 				arr.add(root.catEmployee);
+				InorderInsertion(root.senior, arr);
 			} 
 			return;
 		}
@@ -580,12 +589,16 @@ public class CatCafe implements Iterable<Cat> {
 		//gets next element in arraylist
 		public Cat next(){
 			
-			return CatArray.get(currentindex++);
+			Cat c = CatArray.get(currentindex);
+			currentindex++;
+			return c;
 		}
 
 		//checks if the next element in the array exists
 		public boolean hasNext() {	
-			 if(currentindex+1 <= CatArray.size()-1 && CatArray.get(currentindex+1) != null) {
+			 if(CatArray.size() == 0) {
+				 return false;
+			 } else if(currentindex <= CatArray.size()-1 && CatArray.get(currentindex) != null) {
 				 return true;
 			 } else {
 				 return false;
