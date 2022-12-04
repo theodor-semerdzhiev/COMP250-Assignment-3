@@ -10,7 +10,6 @@ public class CatCafe implements Iterable<Cat> {
 	public CatCafe() {
 	}
 
-
 	public CatCafe(CatNode dNode) {
 		this.root = dNode;
 	}
@@ -387,8 +386,6 @@ public class CatCafe implements Iterable<Cat> {
 			
 			CatNode tmp=null;
 
-
-
 			if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
 				if(node.senior == null) {
 					tmp=node.junior;	
@@ -433,7 +430,7 @@ public class CatCafe implements Iterable<Cat> {
 					break;
 				}
 			}
-			return tmp; //TODO make it so that it returns the instance of the new head of the node 
+			return tmp; 
 		}
 
 		//WORKS (FOR NOW)
@@ -588,42 +585,75 @@ public class CatCafe implements Iterable<Cat> {
 	//REVISE THIS
 	private class CatCafeIterator implements Iterator<Cat> {
 		// HERE YOU CAN ADD THE FIELDS YOU NEED
-		private ArrayList<Cat> CatArray = new ArrayList<Cat>(); //will be used to store the cats in ascending order of seniority
-		private int currentindex;
+		//private ArrayList<Cat> CatArray = new ArrayList<Cat>(); //will be used to store the cats in ascending order of seniority
+		private LinkedList CatList = new LinkedList();
+		private Node currentindex;
 		
 		
 		//sets the arraylist in a depthfirst postorder traversal
 		private CatCafeIterator() {
-			InorderInsertion(CatCafe.this.root, CatArray);
-			currentindex=0;
+			InorderInsertion(CatCafe.this.root, CatList);
+			currentindex=CatList.head;
 		}
 
-		void InorderInsertion(CatNode root, ArrayList<Cat> arr) {
+		void InorderInsertion(CatNode root, LinkedList arr) {
 			if(root != null) {
 				InorderInsertion(root.junior, arr);
-				arr.add(root.catEmployee);
+				arr.add(root);
 				InorderInsertion(root.senior, arr);
 			} 
 			return;
 		}
-		
-		//gets next element in arraylist
+
+		//gets next element in stack
 		public Cat next(){
-			
-			Cat c = CatArray.get(currentindex);
-			currentindex++;
+
+			Cat c = currentindex.cat.catEmployee;
+			currentindex=currentindex.next;
 			return c;
 		}
 
 		//checks if the next element in the array exists
 		public boolean hasNext() {	
-			 if(CatArray.size() == 0) {
-				 return false;
-			 } else if(currentindex <= CatArray.size()-1 && CatArray.get(currentindex) != null) {
-				 return true;
-			 } else {
-				 return false;
-			 }
+			if(CatList.size() == 0) {
+				return false;
+			} else if(currentindex != null) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		private class LinkedList {
+			private Node head;
+			private Node tail;
+			private int size=0;
+
+			public CatNode add(CatNode c) {
+			
+				if(head == null) {
+					head = new Node(c);
+					tail=head;
+					head.next=null;
+				} else {
+					Node tmp = new Node(c);
+					tail.next=tmp;
+					tmp.next=null;
+					tail=tmp;
+				}
+				size++;
+				return head.cat;
+			}
+			public int size() {return size;}
+		}
+		
+		private class Node {
+			private Node next;
+			private CatNode cat;
+
+			public Node(CatNode c) {
+				cat = c;
+			}
 		}
 	}
 	
@@ -726,8 +756,8 @@ public class CatCafe implements Iterable<Cat> {
 
 		
 		//Cafe.buildHallOfFame(5);
-		//Cafe.retire(J);
-		System.out.println(Cafe.root.junior);
+		Cafe.retire(BC);
+		//System.out.println(Cafe.root.junior);
 		System.out.println("\n---------------------------------------------------------------------------------------------------------------------------");
 		
 		CatCafe caf = new CatCafe(Cafe);
