@@ -174,10 +174,9 @@ public class CatCafe implements Iterable<Cat> {
 			int week = (int) Math.floor(root.catEmployee.getDaysToNextGrooming()/7);
 			
 			if(week > arr.size()-1) {
-				arr.add(new ArrayList<Cat>());
-				arr.get(arr.size()-1).add(root.catEmployee);
-			} else if(Math.floor(arr.get(week).get(0).getDaysToNextGrooming() / 7) != week){
-				arr.add(week, new ArrayList<Cat>());
+				for(int i=0; i < week - (arr.size()-1); i++) {
+					arr.add(new ArrayList<Cat>());
+				}
 				arr.get(week).add(root.catEmployee);
 			} else {
 				arr.get(week).add(root.catEmployee);
