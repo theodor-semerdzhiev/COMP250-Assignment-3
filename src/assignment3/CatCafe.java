@@ -18,11 +18,7 @@ public class CatCafe implements Iterable<Cat> {
 	// New CatNode objects, but same Cat objects
 	public CatCafe(CatCafe cafe) {
 
-
-		//root = new CatNode(cafe.root.catEmployee);
 		root =shallowcopy(cafe.root);
-		
-		
 	}
 
 
@@ -31,7 +27,6 @@ public class CatCafe implements Iterable<Cat> {
 		if(root == null) {
 			return null;
 		}
-		
 		CatNode node = new CatNode(root.catEmployee);  
 		node.parent = root.parent;
 		
@@ -44,9 +39,6 @@ public class CatCafe implements Iterable<Cat> {
 		if(node.junior != null) {
 		node.junior.parent=node;
 		}
-
-		
-		
 		return node;
 	}
 
@@ -95,8 +87,7 @@ public class CatCafe implements Iterable<Cat> {
 		ArrayList<Cat> honorlist_long = new ArrayList<Cat>(numOfCatsToHonor);
 		
 		insert(root, honorlist_long);
-	
-		System.out.println("long version:"+honorlist_long.toString());
+
 		ArrayList<Cat> finalhonorlist = new ArrayList<Cat>();
 		for(int i=0; i < numOfCatsToHonor; i++) {
 			
@@ -107,7 +98,6 @@ public class CatCafe implements Iterable<Cat> {
 			}
 			
 		}
-		System.out.println("Cutdown version:"+finalhonorlist.toString());
 		
 		return finalhonorlist;
 	}
@@ -138,9 +128,6 @@ public class CatCafe implements Iterable<Cat> {
 
 		insert(root.junior, honorlist);
 	}
-	
-	
-	
 	
 	// Returns the expected grooming cost the cafe has to incur in the next numDays days
 	public double budgetGroomingExpenses(int numDays) {
@@ -174,23 +161,36 @@ public class CatCafe implements Iterable<Cat> {
 	// The cats in the list at index i need to be groomed in i weeks. 
 	// Cats in each sublist are listed in from most senior to most junior. 
 	public ArrayList<ArrayList<Cat>> getGroomingSchedule() {
-		/*
-		 * TODO: ADD YOUR CODE HERE
-		 */
 		
-		
-		
-		
-		
-		return null;
+		ArrayList<ArrayList<Cat>> arr = new ArrayList<ArrayList<Cat>>(1);
+		ArrayInsertion(root, arr);	
+		return arr;
 	}
-
+	
+	private void ArrayInsertion(CatNode root, ArrayList<ArrayList<Cat>> arr) {
+		if(root != null) {
+			ArrayInsertion(root.junior, arr);
+			
+			int week = (int) Math.floor(root.catEmployee.getDaysToNextGrooming()/7);
+			
+			if(week > arr.size()-1) {
+				arr.add(new ArrayList<Cat>());
+				arr.get(arr.size()-1).add(root.catEmployee);
+			} else if(Math.floor(arr.get(week).get(0).getDaysToNextGrooming() / 7) != week){
+				arr.add(week, new ArrayList<Cat>());
+				arr.get(week).add(root.catEmployee);
+			} else {
+				arr.get(week).add(root.catEmployee);
+			}
+			
+			ArrayInsertion(root.senior, arr);
+		} 
+		return;
+	}
 
 	public Iterator<Cat> iterator() {
-		
 		return new CatCafeIterator();
 	}
-
 
 	public class CatNode {
 
@@ -372,7 +372,6 @@ public class CatCafe implements Iterable<Cat> {
 		
 		//TODO WORKS
 		public CatNode retire(Cat c) {
-
 			
 			if(root.catEmployee.equals(c) && root.senior ==null && root.junior == null) {
 				return null;
@@ -408,7 +407,6 @@ public class CatCafe implements Iterable<Cat> {
 				tmp=node;
 			}
 			
-			
 			while(node.senior != null || node.junior !=null) {
 				if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
 					if(node.senior == null) {
@@ -436,13 +434,9 @@ public class CatCafe implements Iterable<Cat> {
 		//WORKS (FOR NOW)
 		//this method returns the node that the removed node is replaced by
 		private CatNode remove(CatNode root, Cat c) {
-			
-			
 			if(root == null) {
 				return this;
-		
 			}
-			
 			//edge case for when we must remove the head
 			if(root.catEmployee.equals(c) && root.parent == null) {
 				
