@@ -77,7 +77,7 @@ public class CatCafe implements Iterable<Cat> {
 	// in the cafe with the thickest fur. Cats are sorted in descending 
 	// order based on their fur thickness. 
 	
-	//TODO MAKE THIS METHOD RUN IN O(n) TIME  <---------IMPORTANT
+	//WORKS
 	public ArrayList<Cat> buildHallOfFame(int numOfCatsToHonor) {
 
 		if(numOfCatsToHonor == 0) {
@@ -102,7 +102,7 @@ public class CatCafe implements Iterable<Cat> {
 		return finalhonorlist;
 	}
 	
-	//TODO FIX STACKOVERFLOW ERROR IN THE TESTER
+	//WORKS
 	private void insert(CatNode root, ArrayList<Cat> honorlist) {
 
 		if(root == null) {
@@ -162,7 +162,7 @@ public class CatCafe implements Iterable<Cat> {
 	// Cats in each sublist are listed in from most senior to most junior. 
 	public ArrayList<ArrayList<Cat>> getGroomingSchedule() {
 		
-		ArrayList<ArrayList<Cat>> arr = new ArrayList<ArrayList<Cat>>(1);
+		ArrayList<ArrayList<Cat>> arr = new ArrayList<ArrayList<Cat>>();
 		ArrayInsertion(root, arr);	
 		return arr;
 	}
@@ -174,7 +174,7 @@ public class CatCafe implements Iterable<Cat> {
 			int week = (int) Math.floor(root.catEmployee.getDaysToNextGrooming()/7);
 			
 			if(week > arr.size()-1) {
-				for(int i=0; i < week - (arr.size()-1); i++) {
+				for(int i=arr.size()-1; i < week ; i++) {
 					arr.add(new ArrayList<Cat>());
 				}
 				arr.get(week).add(root.catEmployee);
@@ -236,8 +236,6 @@ public class CatCafe implements Iterable<Cat> {
 			}
 			//edge case for when the parent of the newnode is the root
 			if(newnode.parent == CatCafe.this.root) {
-				//CatCafe.this.root.parent=newnode;
-
 				CatNode tmp = newnode.senior; 
 
 				newnode.senior=CatCafe.this.root;
@@ -257,7 +255,6 @@ public class CatCafe implements Iterable<Cat> {
 					root.parent.senior=newnode;
 				}
 			}
-
 			//fixes the parent
 			newnode.parent=root.parent;
 			CatNode tmp=newnode.senior;
@@ -269,13 +266,10 @@ public class CatCafe implements Iterable<Cat> {
 			if(tmp != null) {
 				tmp.parent=root;
 			}
-
-
 			return newnode;
-
 		}
-
-		//TODO works
+		
+		//works
 		private CatNode leftRotate(CatNode newnode) {
 
 			if(newnode ==null) {
@@ -289,14 +283,12 @@ public class CatCafe implements Iterable<Cat> {
 			//edge case if newnode parent is root
 			if(newnode.parent == CatCafe.this.root) {
 				
-
 				CatNode tmp = newnode.junior; 
 				
 				newnode.junior=CatCafe.this.root;
 				CatCafe.this.root.parent=newnode;
 				
 				CatCafe.this.root.senior=tmp;
-				
 				
 				if(tmp !=null) {
 					tmp.parent=CatCafe.this.root;
@@ -384,7 +376,9 @@ public class CatCafe implements Iterable<Cat> {
 			
 			CatNode tmp=null;
 
-			if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
+			if(this.parent == null){
+				tmp=root;
+			} else if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
 				if(node.senior == null) {
 					tmp=node.junior;	
 				} else if(node.junior.catEmployee.getFurThickness() >  node.senior.catEmployee.getFurThickness()) {
@@ -400,8 +394,6 @@ public class CatCafe implements Iterable<Cat> {
 				} else {
 					tmp = node.junior;					
 				}
-			} else if(this == root){
-				tmp=root;
 			} else {
 				tmp=node;
 			}
@@ -430,7 +422,7 @@ public class CatCafe implements Iterable<Cat> {
 			return tmp; 
 		}
 
-		//WORKS (FOR NOW)
+		//WORKS 
 		//this method returns the node that the removed node is replaced by
 		private CatNode remove(CatNode root, Cat c) {
 			if(root == null) {
@@ -438,7 +430,6 @@ public class CatCafe implements Iterable<Cat> {
 			}
 			//edge case for when we must remove the head
 			if(root.catEmployee.equals(c) && root.parent == null) {
-				
 				//edge case for when the head as no junior child 
 				if(root.junior==null) {
 					root.senior.parent=null;
@@ -455,10 +446,8 @@ public class CatCafe implements Iterable<Cat> {
 					}
 					newNode.parent=null;
 					CatCafe.this.root=newNode;
-					
 					return newNode;
 				}
-				
 				
 				if(newNode.junior != null) {
 					newNode.junior.parent=newNode.parent;
@@ -508,7 +497,6 @@ public class CatCafe implements Iterable<Cat> {
 				
 				CatNode newNode = findCatNode(root, root.junior.findMostSenior());
 				
-				
 				if(newNode==root) {
 					newNode.junior.parent=newNode.parent;
 					newNode.parent.senior=newNode.junior;
@@ -522,9 +510,20 @@ public class CatCafe implements Iterable<Cat> {
 					newNode.parent.senior=null;
 				}
 				
+				
 				newNode.parent=root.parent;
+				if(root.parent.senior == root) {
+					newNode.parent.senior=newNode;
+				} else {
+					newNode.parent.junior=newNode;
+				}
+				
 				newNode.senior=root.senior;
+				newNode.senior.parent=newNode;
+				
 				newNode.junior=root.junior;
+				newNode.junior.parent=newNode;
+				
 				return newNode;
 				
 			} else if(root.catEmployee.getMonthHired() < c.getMonthHired()) {
@@ -589,7 +588,7 @@ public class CatCafe implements Iterable<Cat> {
 			currentindex=CatList.head;
 		}
 
-		void InorderInsertion(CatNode root, LinkedList arr) {
+		private void InorderInsertion(CatNode root, LinkedList arr) {
 			if(root != null) {
 				InorderInsertion(root.junior, arr);
 				arr.add(root);
@@ -622,7 +621,7 @@ public class CatCafe implements Iterable<Cat> {
 			private Node tail;
 			private int size=0;
 
-			public CatNode add(CatNode c) {
+			private CatNode add(CatNode c) {
 			
 				if(head == null) {
 					head = new Node(c);
@@ -637,7 +636,7 @@ public class CatCafe implements Iterable<Cat> {
 				size++;
 				return head.cat;
 			}
-			public int size() {return size;}
+			private int size() {return size;}
 		}
 		
 		private class Node {
@@ -649,7 +648,6 @@ public class CatCafe implements Iterable<Cat> {
 			}
 		}
 	}
-	
 	private static void printTree(CatNode root, int spaceCount)
     {
         if(root==null) {
@@ -695,7 +693,7 @@ public class CatCafe implements Iterable<Cat> {
         }
         printTree(root.junior, spacing);
     }
-
+	
 	//for testing 
 	public static void main(String[] args) {
 		
