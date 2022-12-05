@@ -375,9 +375,10 @@ public class CatCafe implements Iterable<Cat> {
 			} 
 			
 			CatNode tmp=null;
-
-			if(this.parent == null){
-				tmp=root;
+			boolean isHead=false;
+			if(this == root){
+				tmp=CatCafe.this.root;
+				isHead=true;
 			} else if(node.junior != null && node.junior.catEmployee.getFurThickness() > node.catEmployee.getFurThickness()) {
 				if(node.senior == null) {
 					tmp=node.junior;	
@@ -419,6 +420,10 @@ public class CatCafe implements Iterable<Cat> {
 					break;
 				}
 			}
+			if(isHead == true) {
+				tmp=root;
+			}
+			
 			return tmp; 
 		}
 
